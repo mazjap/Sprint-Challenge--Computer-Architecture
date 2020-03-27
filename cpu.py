@@ -317,7 +317,6 @@ class CPU:
             print(f"ERROR: No values left in stack, stack could not be popped!\nCurrent address: {self.pc}")
 
     def JMP(self, operand_a, operand_b):
-        # print("JMP")
         self.pc = self.reg[operand_a] - 1
 
     def JEQ(self, operand_a, operand_b):
@@ -347,12 +346,9 @@ class CPU:
             operand_b = int(str(self.ram_read(self.pc + 2)), 2)
 
             if ir in self.op_table:
-                # print(f'line number: {self.pc}, OP instruction: {name[ir]}\nOperand_a: {operand_a}, Operand_b: {operand_b}')
                 self.op_table[ir](operand_a, operand_b)
             else:
-                # print(f'line number: {self.pc}, ALU instruction: {ir}\nOperand_a: {operand_a}, Operand_b: {operand_b}')
                 self.alu(ir, operand_a, operand_b)
-            # print(self.flag)
             
             self.pc += 1
         print("Halting...")
