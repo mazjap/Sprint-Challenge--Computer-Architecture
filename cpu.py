@@ -22,7 +22,7 @@ class CPU:
         self.reg[7] = len(self.ram) - 1
         self.running = False
 
-        self.flag = '0b00000000'
+        self.flag = [0, 0, 0]
 
     def load_memory(self, filename):
         address = 0
@@ -151,14 +151,12 @@ class CPU:
         elif ir == '0b10100111': # CMP
             val_a = self.reg[operand_a]
             val_b = self.reg[operand_b]
-            new_val = '0b'
             if val_a == val_b:
-                new_val += '00000001'
+                self.flag = [0, 0, 1]
             elif val_a > val_b:
-                new_val += '00000010'
+                self.flag = [0, 1, 0]
             else:
-                new_val += '00000100'
-            self.flag = new_val
+                self.flag = [1, 0, 0]
             self.pc += 2
         elif ir == '0b01100110': # DEC
             self.reg[operand_a] -= 1
@@ -323,15 +321,13 @@ class CPU:
         self.pc = self.reg[operand_a] - 1
 
     def JEQ(self, operand_a, operand_b):
-        # print("JEQ")
-        if self.flag.split()[-1] == 1:
+        if self.flag[-1] == 1:
             self.pc = self.reg[operand_a] - 1
         else:
             self.pc += 1
 
     def JNE(self, operand_a, operand_b):
-        # print("JNE")
-        if self.flag.split()[-1] == 0:
+        if self.flag[-1] == 0:
             self.pc = self.reg[operand_a] - 1
         else:
             self.pc += 1
@@ -351,12 +347,12 @@ class CPU:
             operand_b = int(str(self.ram_read(self.pc + 2)), 2)
 
             if ir in self.op_table:
-                print(f'line number: {self.pc}, OP instruction: {name[ir]}\nOperand_a: {operand_a}, Operand_b: {operand_b}')
+                # print(f'line number: {self.pc}, OP instruction: {name[ir]}\nOperand_a: {operand_a}, Operand_b: {operand_b}')
                 self.op_table[ir](operand_a, operand_b)
             else:
-                print(f'line number: {self.pc}, ALU instruction: {ir}\nOperand_a: {operand_a}, Operand_b: {operand_b}')
+                # print(f'line number: {self.pc}, ALU instruction: {ir}\nOperand_a: {operand_a}, Operand_b: {operand_b}')
                 self.alu(ir, operand_a, operand_b)
-            print(self.flag)
+            # print(self.flag)
             
             self.pc += 1
         print("Halting...")
